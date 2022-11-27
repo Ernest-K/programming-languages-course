@@ -1,0 +1,7 @@
+Jan#Kowalski#2000#Gość
+Robert#Kubica#2001#Student
+Adam#Małysz#1999#Kierownik
+Adam#Nowak#1900#Dyrektor
+Jan#Kowalski#2000#Nauczyciel
+Robert#Kubica#2000#Student
+Adam#Małysz#1999#Kierownik
