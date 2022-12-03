@@ -2,10 +2,15 @@ package pl.edu.pwr;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class Window extends JFrame {
 
     private final Color DefaultBackgroundColor = Color.WHITE;
+    private int failLoginCounter = 0;
+
+    JTextField usernameField;
+    JPasswordField passwordField;
 
     public Window() throws HeadlessException {
         this("undefined");
@@ -32,10 +37,18 @@ public class Window extends JFrame {
     }
 
     private void createFields(){
-        JTextField loginField = new JTextField(25);
-        JPasswordField passwordField = new JPasswordField(25);
+        usernameField = new JTextField(28);
+        passwordField = new JPasswordField(28);
 
-        add(loginField);
+        JLabel usernameLabel = new JLabel("User name:");
+        JLabel passwordLabel = new JLabel("Password:");
+
+        usernameLabel.setLabelFor(usernameField);
+        passwordLabel.setLabelFor(passwordField);
+
+        add(usernameLabel);
+        add(usernameField);
+        add(passwordLabel);
         add(passwordField);
     }
 
@@ -45,12 +58,33 @@ public class Window extends JFrame {
         JButton loginBtn = new JButton("Log in");
         JButton clearBtn = new JButton("Clear");
 
-        loginBtn.addActionListener(actionEvent -> changeBackgroundColor(Color.GREEN));
-        clearBtn.addActionListener(actionEvent -> changeBackgroundColor(DefaultBackgroundColor));
+        loginBtn.addActionListener(this::loginBtnActionPerformed);
+        clearBtn.addActionListener(this::clearBtnActionPerformed);
 
         buttonsPanel.add(loginBtn);
         buttonsPanel.add(clearBtn);
 
         add(buttonsPanel);
+    }
+
+    private void loginBtnActionPerformed(ActionEvent actionEvent){
+        if (Database.login(usernameField.getText(), passwordField.getPassword())){
+            changeBackgroundColor(Color.GREEN);
+        }else {
+            failLoginCounter++;
+            changeBackgroundColor(Color.RED);
+        };
+
+        //if 3 failed attempts in a row - close window
+        if(failLoginCounter >= 3){
+            this.dispose();
+        }
+    }
+
+    private void clearBtnActionPerformed(ActionEvent actionEvent){
+        failLoginCounter = 0;
+        usernameField.setText("");
+        passwordField.setText("");
+        changeBackgroundColor(DefaultBackgroundColor);
     }
 }
