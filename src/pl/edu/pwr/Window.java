@@ -24,7 +24,7 @@ public class Window extends JFrame {
     protected void buildFrame(){
         setBounds(100, 100, 450, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
+        setLayout(null);
 
         changeBackgroundColor(DefaultBackgroundColor);
 
@@ -40,11 +40,20 @@ public class Window extends JFrame {
         usernameField = new JTextField(28);
         passwordField = new JPasswordField(28);
 
+        //set field positions
+        usernameField.setBounds(125, 75, 275, 25);
+        passwordField.setBounds(125, 100, 275, 25);
+
         JLabel usernameLabel = new JLabel("User name:");
         JLabel passwordLabel = new JLabel("Password:");
 
+        //set label positions
+        usernameLabel.setBounds(25, 75, 100 ,25);
+        passwordLabel.setBounds(25, 100, 100, 25);
+
         usernameLabel.setLabelFor(usernameField);
         passwordLabel.setLabelFor(passwordField);
+
 
         add(usernameLabel);
         add(usernameField);
@@ -53,18 +62,18 @@ public class Window extends JFrame {
     }
 
     private void createButtons(){
-        JPanel buttonsPanel = new JPanel(new FlowLayout());
-
         JButton loginBtn = new JButton("Log in");
         JButton clearBtn = new JButton("Clear");
+
+        //set button positions
+        loginBtn.setBounds(125, 150, 75, 25);
+        clearBtn.setBounds(200, 150, 75, 25);
 
         loginBtn.addActionListener(this::loginBtnActionPerformed);
         clearBtn.addActionListener(this::clearBtnActionPerformed);
 
-        buttonsPanel.add(loginBtn);
-        buttonsPanel.add(clearBtn);
-
-        add(buttonsPanel);
+        add(loginBtn);
+        add(clearBtn);
     }
 
     private void loginBtnActionPerformed(ActionEvent actionEvent){
