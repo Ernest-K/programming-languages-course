@@ -1,0 +1,6 @@
+Z#Z#2000#Gość
+Z#Z#2000#Gość
+Z#Z#2001#Gość
+Z#Z#2000#Student
+B#B#1900#Kierownik
+A#A#1999#Nauczyciel
