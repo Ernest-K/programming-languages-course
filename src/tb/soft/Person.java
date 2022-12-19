@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Comparator;
 
 
 /*
@@ -79,12 +80,13 @@ class PersonException extends Exception {
  * niedozwolonej wartości, któremuś z atrybutów jest zgłaszany wyjątek
  * zawierający stosowny komunikat.
  */
-public class Person {
+public class Person implements Comparable{
+
 	
-	private String firstName;
-	private String lastName;
-	private int birthYear;
-	private PersonJob job;
+	protected String firstName;
+	protected String lastName;
+	protected int birthYear;
+	protected PersonJob job;
  
 	
 	public Person(String first_name, String last_name) throws PersonException {
@@ -212,5 +214,42 @@ public class Person {
 			throw new PersonException("Wystąpił błąd podczas odczytu danych z pliku.");
 		}	
 	}
-	
+
+
+//	Zła implementacja metody compareTo
+	@Override
+	public int compareTo(Object o) {
+		return 0;
+	}
+
+//	Komparatory do niestandardowego sortowania
+	public static Comparator<Person> FirstNameComparator = new Comparator<Person>() {
+		@Override
+		public int compare(Person p1, Person p2) {
+			return p1.getFirstName().compareTo(p2.getFirstName());
+		}
+	};
+
+
+	public static Comparator<Person> LastNameComparator = new Comparator<Person>() {
+		@Override
+		public int compare(Person p1, Person p2) {
+			return p1.getLastName().compareTo(p2.getLastName());
+		}
+	};
+
+
+	public static Comparator<Person> AgeComparator = new Comparator<Person>() {
+		@Override
+		public int compare(Person p1, Person p2) {
+			return p2.getBirthYear() - p1.getBirthYear();
+		}
+	};
+
+	public static Comparator<Person> JobComparator = new Comparator<Person>() {
+		@Override
+		public int compare(Person p1, Person p2) {
+			return p1.getJob().ordinal() - p2.getJob().ordinal();
+		}
+	};
 }  // koniec klasy Person
