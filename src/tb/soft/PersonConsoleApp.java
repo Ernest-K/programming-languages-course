@@ -1,6 +1,8 @@
 package tb.soft;
 
+import java.io.*;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Program: Aplikacja działająca w oknie konsoli, która umożliwia testowanie 
@@ -24,6 +26,7 @@ public class PersonConsoleApp {
 			"3 - Modyfikuj dane osoby   \n" +
 			"4 - Wczytaj dane z pliku   \n" +
 			"5 - Zapisz dane do pliku   \n" +
+			"6 - Zapisz kolekcje   		\n" +
 			"0 - Zakończ program        \n";	
 	
 	private static final String CHANGE_MENU = 
@@ -50,11 +53,15 @@ public class PersonConsoleApp {
 		application.runMainLoop();
 	} 
 
+
+	private final CollectionsContainer<Person> collectionsContainer = new CollectionsContainer<>();
+	private final CollectionsContainer<PersonModded> collectionsContainerModded = new CollectionsContainer<>();
 	
 	/*
 	 *  Referencja do obiektu, który zawiera dane aktualnej osoby.
 	 */
 	private Person currentPerson = null;
+	private PersonModded currentPersonModded = null;
 	
 	
 	/*
@@ -72,35 +79,75 @@ public class PersonConsoleApp {
 
 			try {
 				switch (UI.enterInt(MENU + "==>> ")) {
-				case 1:
+				case 1: {
 					// utworzenie nowej osoby
 					currentPerson = createNewPerson();
+					assert currentPerson != null;
+					currentPersonModded = new PersonModded(currentPerson);
+
+					collectionsContainer.add(currentPerson);
+					collectionsContainerModded.add(currentPersonModded);
+
 					break;
-				case 2:
+				}
+				case 2: {
 					// usunięcie danych aktualnej osoby.
+					collectionsContainer.remove(currentPerson);
+					collectionsContainerModded.remove(currentPersonModded);
+
 					currentPerson = null;
+					currentPersonModded = null;
+
 					UI.printInfoMessage("Dane aktualnej osoby zostały usunięte");
 					break;
-				case 3:
+				}
+				case 3: {
 					// zmiana danych dla aktualnej osoby
 					if (currentPerson == null) throw new PersonException("Żadna osoba nie została utworzona.");
+
+					collectionsContainer.remove(currentPerson);
+					collectionsContainerModded.remove(currentPersonModded);
+
 					changePersonData(currentPerson);
+					changePersonData(currentPersonModded);
+
+					collectionsContainer.add(currentPerson);
+					collectionsContainerModded.add(currentPersonModded);
+
 					break;
+				}
 				case 4: {
 					// odczyt danych z pliku tekstowego.
 					String file_name = UI.enterString("Podaj nazwę pliku: ");
-					currentPerson = Person.readFromFile(file_name);
+
+					//currentPerson = Person.readFromFile(file_name);
+
+					//read all people from file, not only one
+					readFromFile(file_name);
+
 					UI.printInfoMessage("Dane aktualnej osoby zostały wczytane z pliku " + file_name);
-				}
 					break;
+				}
+
 				case 5: {
 					// zapis danych aktualnej osoby do pliku tekstowego 
 					String file_name = UI.enterString("Podaj nazwę pliku: ");
 					Person.printToFile(file_name, currentPerson);
 					UI.printInfoMessage("Dane aktualnej osoby zostały zapisane do pliku " + file_name);
+					break;
 				}
 
+
+
+				case 6: {
+					String file_name = UI.enterString("Podaj nazwę pliku: ");
+
+					CollectionsContainer.printToFile(file_name, collectionsContainer);
+					CollectionsContainer.printToFile("modded_"+file_name, collectionsContainerModded);
+
+					UI.printInfoMessage("Kolekcje zostały zapisane do pliku " + file_name);
 					break;
+				}
 				case 0:
 					// zakończenie działania programu
 					UI.printInfoMessage("\nProgram zakończył działanie!");
@@ -216,6 +263,27 @@ public class PersonConsoleApp {
 			}
 		}
 	}
-	
-	
+
+	// read all people from file, not only one
+	void readFromFile(String fileName) throws PersonException {
+		try (BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+			String line;
+			while (( line = reader.readLine()) != null) {
+				String[] txt = line.split("#");
+				Person person = new Person(txt[0], txt[1]);
+				person.setBirthYear(txt[2]);
+				person.setJob(txt[3]);
+
+				currentPerson = person;
+				currentPersonModded = new PersonModded(person);
+
+				collectionsContainer.add(person);
+				collectionsContainerModded.add(currentPersonModded);
+			}
+		} catch (FileNotFoundException e){
+			throw new PersonException("Nie odnaleziono pliku " + fileName);
+		} catch(IOException e){
+			throw new PersonException("Wystąpił błąd podczas odczytu danych z pliku.");
+		}
+	}
 }  // koniec klasy PersonConsoleApp
