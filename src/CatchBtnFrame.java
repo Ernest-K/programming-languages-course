@@ -50,6 +50,7 @@ public class CatchBtnFrame extends JFrame implements KeyListener {
                 int x = rand.nextInt(getWidth() - btn.getWidth());
                 int y = rand.nextInt(getHeight() - 3 * btn.getHeight());
 
+//                If left-ctrl pressed do not change location of button
                 if(!isCtrlPressed){
                     btn.setLocation(x, y);
                 }

@@ -25,6 +25,10 @@ public class CanvasFrame extends JFrame {
         setVisible(true);
         setFocusable(true);
 
+        createCanvasPanel();
+        createDescriptionLabel();
+        createSpriteLabel();
+
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -48,9 +52,9 @@ public class CanvasFrame extends JFrame {
             }
         });
 
-        createCanvasPanel();
-        createDescriptionLabel();
-        createSpriteLabel();
+        //set default sprite
+        canvasPanel.setSprite(new Square(-50,-50));
+        updateSpriteLabel(canvasPanel.getSprite().toString());
     }
 
     protected void createCanvasPanel() {
